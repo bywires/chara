@@ -2,7 +2,7 @@ from decorator import decorator
 
 from .exceptions import CharaException
 from .detect import is_static_method, is_function, is_class_method, \
-    is_instance_method
+    is_instance_method, is_class, get_callables
 
 
 def get_watcher(spy, context, attribute):
@@ -19,6 +19,9 @@ def get_watcher(spy, context, attribute):
 
     elif is_instance_method(attribute):
         return watch_instance_method(spy, attribute)
+
+    elif is_class(attribute):
+        pass
 
     else:
         raise CharaException('Cannot spy on type {}'.format(t))

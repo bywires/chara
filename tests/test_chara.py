@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from .fixtures import dummy_function, Dummy
 from chara import Spy, Call
 
 
@@ -31,6 +32,39 @@ class CharaTest(TestCase):
             lambda: Dummy.dummy_static_method
         )
 
+    def test_all_class_methods(self):
+        self.skipTest('not implemented')
+
+        spy = Spy(MODULE + '.Dummy')
+
+        with spy.record():
+            Dummy.dummy_class_method(1, b=2, c=3, d=4)
+            Dummy.dummy_static_method(5, b=6, c=7, d=8)
+            Dummy().dummy_instance_method(9, b=10, c=11, d=12)
+
+        self.assertEqual(
+            spy.calls, 
+            [ 
+                Call(
+                    args=(1, 2), 
+                    kwargs={'c': 3, 'd': 4}, 
+                    return_value=10
+                ),
+
+                Call(
+                    args=(5, 6), 
+                    kwargs={'c': 7, 'd': 8}, 
+                    return_value=26
+                ),
+
+                Call(
+                    args=(9, 10), 
+                    kwargs={'c': 11, 'd': 12}, 
+                    return_value=42
+                )
+            ]
+        )        
+
     def spy_on(self, spy, getter):
         # shouldn't record this
         self.assertEqual(26, getter()(5, b=6, c=7, d=8), 
@@ -55,21 +89,3 @@ class CharaTest(TestCase):
                 return_value=10
             ) ]
         )
-
-
-def dummy_function(a, b=0, *args, **kwargs):
-    return a + b + sum(args) + sum(kwargs.values())
-
-
-class Dummy(object):
-    def dummy_instance_method(self, a, b=0, *args, **kwargs):
-        return dummy_function(a, b=b, *args, **kwargs)
-
-    @classmethod
-    def dummy_class_method(cls, a, b=0, *args, **kwargs):
-        return dummy_function(a, b=b, *args, **kwargs)
-
-    @staticmethod
-    def dummy_static_method(a, b=0, *args, **kwargs):
-        return dummy_function(a, b=b, *args, **kwargs)
-

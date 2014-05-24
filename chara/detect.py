@@ -19,3 +19,8 @@ def is_instance_method(o):
 
 def is_static_method(o, context=None):
     return inspect.isfunction(o) and inspect.isclass(context)
+
+
+def get_callables(o):
+    return { k: getattr(o, k) for k in dir(o) \
+             if callable(getattr(o, k)) }
