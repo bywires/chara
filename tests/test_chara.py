@@ -13,25 +13,31 @@ class CharaTest(TestCase):
 
     def test_spy_on_instance_method(self):
         self.spy_on(
-            Spy(MODULE + '.Dummy.dummy_instancemethod'), 
-            lambda: Dummy().dummy_instancemethod
+            Spy(MODULE + '.Dummy.dummy_instance_method'), 
+            lambda: Dummy().dummy_instance_method
         )
 
     def test_spy_on_class_method(self):
         self.spy_on(
-            Spy(MODULE + '.Dummy.dummy_classmethod'), 
-            lambda: Dummy.dummy_classmethod
+            Spy(MODULE + '.Dummy.dummy_class_method'), 
+            lambda: Dummy.dummy_class_method
         )
 
     def spy_on(self, spy, getter):
         # shouldn't record this
-        self.assertEqual(26, getter()(5, b=6, c=7, d=8))
+        self.assertEqual(26, getter()(5, b=6, c=7, d=8), 
+                         'Function didn\'t work before spying')
 
         with spy.record():
-            self.assertEqual(10, getter()(1, b=2, c=3, d=4))
+            target = getter()
+            self.assertEqual(spy.attribute_name, target.__name__, 
+                             'Function name not preserved')
+            self.assertEqual(10, target(1, b=2, c=3, d=4),
+                             'Function didn\t work during spying')
 
         # shouldn't record this
-        self.assertEqual(26, getter()(5, b=6, c=7, d=8))
+        self.assertEqual(26, getter()(5, b=6, c=7, d=8),
+                         'Function didn\'t work after spying')
 
         self.assertEqual(
             spy.calls, 
@@ -49,9 +55,9 @@ def dummy_function(a, b=0, *args, **kwargs):
 
 class Dummy(object):
     @classmethod
-    def dummy_classmethod(cls, a, b=0, *args, **kwargs):
+    def dummy_class_method(cls, a, b=0, *args, **kwargs):
         return dummy_function(a, b=b, *args, **kwargs)
 
-    def dummy_instancemethod(self, a, b=0, *args, **kwargs):
+    def dummy_instance_method(self, a, b=0, *args, **kwargs):
         return dummy_function(a, b=b, *args, **kwargs)
 

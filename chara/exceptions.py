@@ -1,0 +1,2 @@
+class CharaException(Exception):
+    pass
