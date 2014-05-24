@@ -81,5 +81,13 @@ class Call(object):
         self.kwargs = kwargs
         self.return_value = return_value
 
+    def __str__(self):
+        return super(Call, self).__str__() + ' ' + str(self.__dict__)
+
     def __eq__(self, other): 
+        print 'a'
         return self.__dict__ == other.__dict__
+
+    def __ne__(self, other): 
+        print 'b'
+        return self.__dict__ != other.__dict__

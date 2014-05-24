@@ -5,8 +5,3 @@ from chara import Spy, Call
 
 __version__ = '0.0.1'
 __author__ = 'Bob McKee'
-
-__all__ = [
-    'Spy',
-    'Call'
-]

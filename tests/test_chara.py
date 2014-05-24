@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from chara import Spy, Call
 
-MODULE = 'test.test_chara'
+MODULE = 'tests.test_chara'
 
 class CharaTest(TestCase):
     def test_spy_on_function(self):
@@ -25,32 +25,33 @@ class CharaTest(TestCase):
 
     def spy_on(self, spy, getter):
         # shouldn't record this
-        self.assertEqual(15, getter()(4, b=5, c=6))
+        self.assertEqual(26, getter()(5, b=6, c=7, d=8))
 
         with spy.record():
-            self.assertEqual(6, getter()(1, b=2, c=3))
+            self.assertEqual(10, getter()(1, b=2, c=3, d=4))
 
         # shouldn't record this
-        self.assertEqual(15, getter()(4, b=5, c=6))
+        self.assertEqual(26, getter()(5, b=6, c=7, d=8))
 
         self.assertEqual(
             spy.calls, 
             [ Call(
                 args=(1, 2), 
-                kwargs={'c': 3}, 
-                return_value=6
+                kwargs={'c': 3, 'd': 4}, 
+                return_value=10
             ) ]
         )
 
 
-def dummy_function(a, b=0, **kwargs):
-    return a + b + sum(kwargs.values())
+def dummy_function(a, b=0, *args, **kwargs):
+    return a + b + sum(args) + sum(kwargs.values())
 
 
 class Dummy(object):
     @classmethod
-    def dummy_classmethod(cls, a, b=0, **kwargs):
-        return a + b + sum(kwargs.values())
+    def dummy_classmethod(cls, a, b=0, *args, **kwargs):
+        return dummy_function(a, b=b, *args, **kwargs)
 
-    def dummy_instancemethod(self, a, b=0, **kwargs):
-        return a + b + sum(kwargs.values())
+    def dummy_instancemethod(self, a, b=0, *args, **kwargs):
+        return dummy_function(a, b=b, *args, **kwargs)
+
