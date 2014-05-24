@@ -2,7 +2,9 @@ from unittest import TestCase
 
 from chara import Spy, Call
 
+
 MODULE = 'tests.test_chara'
+
 
 class CharaTest(TestCase):
     def test_spy_on_function(self):
@@ -21,6 +23,12 @@ class CharaTest(TestCase):
         self.spy_on(
             Spy(MODULE + '.Dummy.dummy_class_method'), 
             lambda: Dummy.dummy_class_method
+        )
+
+    def test_spy_on_static_method(self):
+        self.spy_on(
+            Spy(MODULE + '.Dummy.dummy_static_method'), 
+            lambda: Dummy.dummy_static_method
         )
 
     def spy_on(self, spy, getter):
@@ -54,10 +62,14 @@ def dummy_function(a, b=0, *args, **kwargs):
 
 
 class Dummy(object):
+    def dummy_instance_method(self, a, b=0, *args, **kwargs):
+        return dummy_function(a, b=b, *args, **kwargs)
+
     @classmethod
     def dummy_class_method(cls, a, b=0, *args, **kwargs):
         return dummy_function(a, b=b, *args, **kwargs)
 
-    def dummy_instance_method(self, a, b=0, *args, **kwargs):
+    @staticmethod
+    def dummy_static_method(a, b=0, *args, **kwargs):
         return dummy_function(a, b=b, *args, **kwargs)
 

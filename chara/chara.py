@@ -4,6 +4,7 @@ from mock import _get_target
 
 from .watchers import get_watcher
 from .exceptions import CharaException
+from .detect import is_static_method
 
 class Spy(object):
     def __init__(self, target):
@@ -13,11 +14,13 @@ class Spy(object):
     def start(self):
         # import the target
         self.target = self.target_getter()
+
+        # store old attribute to be restored later
         self.old_attribute = getattr(self.target, self.attribute_name)
 
         # replace attribute
         setattr(self.target, self.attribute_name, 
-                get_watcher(self, self.old_attribute))
+                get_watcher(self, self.target, self.old_attribute))
 
     def stop(self):
         if not self.target:
@@ -25,7 +28,11 @@ class Spy(object):
                                 'not started')
 
         # restore attribute
-        setattr(self.target, self.attribute_name, self.old_attribute)
+        if is_static_method(self.old_attribute, context=self.target):
+            setattr(self.target, self.attribute_name, 
+                    staticmethod(self.old_attribute))
+        else:
+            setattr(self.target, self.attribute_name, self.old_attribute)
 
     @contextmanager
     def record(self):
