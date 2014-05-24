@@ -1,7 +1,7 @@
 from decorator import decorator
 
 from .exceptions import CharaException
-from .detect import is_static_method, is_function, is_class_method, \
+from .detectors import is_static_method, is_function, is_class_method, \
     is_instance_method, is_class, get_callables
 
 

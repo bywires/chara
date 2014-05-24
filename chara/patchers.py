@@ -1,6 +1,6 @@
 from .exceptions import CharaException
 from .watchers import get_watcher
-from .detect import is_static_method, is_callable, is_class
+from .detectors import is_static_method, is_callable, is_class
 
 
 def get_patcher(spy, name, context):

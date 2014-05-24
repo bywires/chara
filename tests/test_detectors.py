@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from .fixtures import Dummy
-from chara.detect import get_callables
+from chara.detectors import get_callables
 
 
 class GetCallablesTest(TestCase):
