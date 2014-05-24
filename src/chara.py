@@ -38,6 +38,8 @@ def decorate(o, spy):
 
     if t is types.FunctionType:
         return decorator(watch_function(spy), o)
+    if t is types.MethodType:
+        return decorator(watch_method(spy), o.im_func)
     elif t is types.ObjectType:
         pass
     else:
@@ -47,7 +49,27 @@ def decorate(o, spy):
 def watch_function(spy):
     def wrapper(fn, *args, **kwargs):
         return_value = fn(*args, **kwargs)
-        spy.calls.append(Call(args, kwargs, return_value))
+
+        spy.calls.append(Call(
+            args, 
+            kwargs, 
+            return_value
+        ))
+
+        return return_value
+
+    return wrapper
+
+def watch_method(spy):
+    def wrapper(fn, *args, **kwargs):
+        return_value = fn(*args, **kwargs)
+
+        spy.calls.append(Call(
+            args[1:], # discard 'self'
+            kwargs, 
+            return_value
+        ))
+
         return return_value
 
     return wrapper
