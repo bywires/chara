@@ -5,7 +5,7 @@ from .detect import is_static_method, is_function, is_class_method, \
     is_instance_method, is_class, get_callables
 
 
-def get_watcher(spy, context, attribute):
+def get_watcher(spy, attribute, context):
     t = type(attribute)
 
     if is_static_method(attribute, context):
@@ -24,7 +24,11 @@ def get_watcher(spy, context, attribute):
         pass
 
     else:
-        raise CharaException('Cannot spy on type {}'.format(t))
+        raise CharaException('Cannot spy on {attribute} '
+                             'of {context}'.format(
+                                 attribute=attribute,
+                                 context=context
+                             ))
 
 
 def watch_function(spy, attribute):

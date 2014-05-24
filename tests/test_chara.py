@@ -72,7 +72,7 @@ class CharaTest(TestCase):
 
         with spy.record():
             target = getter()
-            self.assertEqual(spy.attribute_name, target.__name__, 
+            self.assertEqual(spy.name, target.__name__, 
                              'Function name not preserved')
             self.assertEqual(10, target(1, b=2, c=3, d=4),
                              'Function didn\t work during spying')

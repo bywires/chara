@@ -2,37 +2,30 @@ from contextlib import contextmanager
 
 from mock import _get_target
 
-from .watchers import get_watcher
 from .exceptions import CharaException
-from .detect import is_static_method
+from .patchers import get_patcher
+
 
 class Spy(object):
     def __init__(self, target):
-        self.target_getter, self.attribute_name = _get_target(target)
+        self.context_getter, self.name = _get_target(target)
         self.calls = []
 
     def start(self):
-        # import the target
-        self.target = self.target_getter()
+        self.patcher = get_patcher(
+            self, 
+            self.name, 
+            self.context_getter() # import the context
+        )
 
-        # store old attribute to be restored later
-        self.old_attribute = getattr(self.target, self.attribute_name)
-
-        # replace attribute
-        setattr(self.target, self.attribute_name, 
-                get_watcher(self, self.target, self.old_attribute))
+        self.patcher.start()
 
     def stop(self):
-        if not self.target:
+        if not self.patcher:
            raise CharaException('Spy cannot be stopped because it was '
                                 'not started')
 
-        # restore attribute
-        if is_static_method(self.old_attribute, context=self.target):
-            setattr(self.target, self.attribute_name, 
-                    staticmethod(self.old_attribute))
-        else:
-            setattr(self.target, self.attribute_name, self.old_attribute)
+        self.patcher.stop()
 
     @contextmanager
     def record(self):
