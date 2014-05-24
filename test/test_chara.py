@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from chara import Spy, Call
 
-MODULE = 'chara.test.test_chara'
+MODULE = 'test.test_chara'
 
 class CharaTest(TestCase):
     def test_spy_on_function(self):
