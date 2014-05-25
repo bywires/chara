@@ -1,13 +1,11 @@
 from decorator import decorator
 
-from .exceptions import CharaException
+from .exceptions import WrapperCreationException
 from .detectors import is_static_method, is_function, is_class_method, \
-    is_instance_method, is_class, get_callables
+    is_instance_method, is_class, is_slot_wrapper
 
 
 def get_watcher(spy, attribute, context):
-    t = type(attribute)
-
     if is_static_method(attribute, context):
         return watch_static_method(spy, attribute)
 
@@ -20,15 +18,23 @@ def get_watcher(spy, attribute, context):
     elif is_instance_method(attribute):
         return watch_instance_method(spy, attribute)
 
-    elif is_class(attribute):
-        pass
-
     else:
-        raise CharaException('Cannot spy on {attribute} '
-                             'of {context}'.format(
-                                 attribute=attribute,
-                                 context=context
-                             ))
+        raise WrapperCreationException(
+            'Cannot spy on {attribute} of {context}'.format(
+                attribute=attribute,
+                context=context
+            )
+        )
+
+
+def is_watchable(attribute, context):
+    try:
+        get_watcher(None, attribute, context)
+        return True
+
+    except WrapperCreationException, e:
+        print e
+        return False
 
 
 def watch_function(spy, attribute):

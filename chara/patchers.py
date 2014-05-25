@@ -1,39 +1,42 @@
-from .exceptions import CharaException
-from .watchers import get_watcher
-from .detectors import is_static_method, is_callable, is_class
+from .exceptions import PatcherCreationException
+from .watchers import get_watcher, is_watchable
+from .detectors import is_static_method, is_callable, is_class, get_callables
 
 
 def get_patcher(spy, name, context):
     attribute = getattr(context, name)
-    watcher = get_watcher(spy, attribute, context)
 
-    if is_static_method(attribute, context):
-        patcher = StaticMethodPatcher
+    if is_class(attribute):
+        # In this case the attribute is actually the context.
+        context = attribute
+
+        # Get all the callables on the object and get patchers for them.
+        return MultiPatcher([
+            get_patcher(spy, name, context) \
+            for name, attribute in get_callables(context).items() \
+            if is_watchable(attribute, context)
+        ])
 
     elif is_callable(attribute):
-        patcher = CallablePatcher
+        watcher = get_watcher(spy, attribute, context)
 
-    elif is_class(attribute):
-        pass
+        if is_static_method(attribute, context):
+            return StaticMethodPatcher(name, attribute, context, watcher)
+
+        else:
+            return CallablePatcher(name, attribute, context, watcher)
 
     else:
-        raise CharaException('Cannot patch {name} ({attribute}) '
-                             'of {context}'.format(
-                                 name=name,
-                                 attribute=attribute,
-                                 context=context
-                             ))
-
-    return patcher(name, attribute, context, watcher)
+        raise PatcherCreationException(
+            'Cannot patch {name} ({attribute}) of {context}'.format(
+                name=name,
+                attribute=attribute,
+                context=context
+            )
+        )
 
 
 class Patcher(object):
-    def __init__(self, name, attribute, context, watcher):
-        self.name = name
-        self.attribute = attribute
-        self.context = context
-        self.watcher = watcher
-
     def start(self):
         raise NotImplementedError
 
@@ -42,6 +45,12 @@ class Patcher(object):
 
 
 class CallablePatcher(Patcher):
+    def __init__(self, name, attribute, context, watcher):
+        self.name = name
+        self.attribute = attribute
+        self.context = context
+        self.watcher = watcher
+
     def start(self):
         setattr(self.context, self.name, self.watcher)
 
@@ -52,4 +61,14 @@ class CallablePatcher(Patcher):
 class StaticMethodPatcher(CallablePatcher):
     def stop(self):
         setattr(self.context, self.name, staticmethod(self.attribute))
+
         
+class MultiPatcher(Patcher):
+    def __init__(self, patchers):
+        self.patchers = patchers
+
+    def start(self):
+        for p in self.patchers: p.start()
+
+    def stop(self):
+        for p in self.patchers: p.stop()

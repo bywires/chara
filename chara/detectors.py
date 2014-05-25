@@ -17,8 +17,13 @@ def is_instance_method(o):
     return inspect.ismethod(o) and o.__self__ is None
     
 
-def is_static_method(o, context=None):
+def is_static_method(o, context):
     return inspect.isfunction(o) and inspect.isclass(context)
+
+
+def is_slot_wrapper(o, context):
+    return callable(o) and inspect.isclass(context) and \
+        hasattr(o, '__objclass__')
 
 
 def is_callable(o):

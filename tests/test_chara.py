@@ -33,8 +33,6 @@ class CharaTest(TestCase):
         )
 
     def test_all_class_methods(self):
-        self.skipTest('not implemented')
-
         spy = Spy(MODULE + '.Dummy')
 
         with spy.record():
@@ -75,7 +73,7 @@ class CharaTest(TestCase):
             self.assertEqual(spy.name, target.__name__, 
                              'Function name not preserved')
             self.assertEqual(10, target(1, b=2, c=3, d=4),
-                             'Function didn\t work during spying')
+                             'Function didn\'t work during spying')
 
         # shouldn't record this
         self.assertEqual(26, getter()(5, b=6, c=7, d=8),
