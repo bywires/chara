@@ -21,10 +21,10 @@ class DecoratorsTest(TestCase):
         test(self)
 
         @replay(target)
-        def test2(self):
+        def test(self):
             v = Value()
             self.assertEqual(5, v.get())
 
-        test2(self)
+        test(self)
 
         self.fail()
