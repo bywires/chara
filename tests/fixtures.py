@@ -25,3 +25,14 @@ class Value(object):
 
     def get(self):
         return self.value
+
+
+class Cache(object):
+    def __init__(self):
+        self.values = {}
+
+    def get(self, k):
+        return self.values[k]
+
+    def set(self, k, v):
+        self.values[k] = v

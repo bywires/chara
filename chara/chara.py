@@ -14,6 +14,7 @@ class Spy(object):
         self.context_getter, self.name = _get_target(target)
         self.patcher = None
         self.calls = {}
+        self.replay_mode = None
 
     def start_recording(self):
         self._start(get_recorder)
@@ -52,6 +53,9 @@ class Spy(object):
             return self.calls[fn.__name__][index]
         except IndexError, e:
             raise CallNotFoundException()
+
+    def replay_mode(self, replay_mode):
+        self.replay_mode = replay_mode
 
     def _start(self, decorator_factory):
         self.patcher = get_patcher(
