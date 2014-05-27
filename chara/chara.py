@@ -1,8 +1,11 @@
 from contextlib import contextmanager
+from functools import partial
+
 from mock import _get_target
 
 from .exceptions import CharaException
 from .patchers import get_patcher
+from .watchers import get_watcher
 
 
 class Spy(object):
@@ -12,9 +15,13 @@ class Spy(object):
 
     def start(self):
         self.patcher = get_patcher(
-            self, 
             self.name, 
-            self.context_getter() # import the context
+
+            # import the context
+            self.context_getter(), 
+
+            # watcher factory
+            partial(get_watcher, self)
         )
 
         self.patcher.start()

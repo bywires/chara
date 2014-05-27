@@ -1,9 +1,9 @@
 from .exceptions import PatcherCreationException
-from .watchers import get_watcher, is_watchable
+from .watchers import is_watchable
 from .detectors import is_static_method, is_callable, is_class, get_callables
 
 
-def get_patcher(spy, name, context):
+def get_patcher(name, context, decorator_factory):
     attribute = getattr(context, name)
 
     if is_class(attribute):
@@ -12,19 +12,19 @@ def get_patcher(spy, name, context):
 
         # Get all the callables on the object and get patchers for them.
         return MultiPatcher([
-            get_patcher(spy, name, context) \
+            get_patcher(name, context, decorator_factory) \
             for name, attribute in get_callables(context).items() \
             if is_watchable(attribute, context)
         ])
 
     elif is_callable(attribute):
-        watcher = get_watcher(spy, attribute, context)
+        decorator = decorator_factory(attribute, context)
 
         if is_static_method(attribute, context):
-            return StaticMethodPatcher(name, attribute, context, watcher)
+            return StaticMethodPatcher(name, attribute, context, decorator)
 
         else:
-            return CallablePatcher(name, attribute, context, watcher)
+            return CallablePatcher(name, attribute, context, decorator)
 
     else:
         raise PatcherCreationException(
@@ -45,14 +45,14 @@ class Patcher(object):
 
 
 class CallablePatcher(Patcher):
-    def __init__(self, name, attribute, context, watcher):
+    def __init__(self, name, attribute, context, decorator):
         self.name = name
         self.attribute = attribute
         self.context = context
-        self.watcher = watcher
+        self.decorator = decorator
 
     def start(self):
-        setattr(self.context, self.name, self.watcher)
+        setattr(self.context, self.name, self.decorator)
 
     def stop(self):
         setattr(self.context, self.name, self.attribute)
