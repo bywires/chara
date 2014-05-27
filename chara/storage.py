@@ -1,19 +1,21 @@
 import os, pickle, inspect
 
 
-def write(test_callable, spy):
+def write(test_callable, call_list):
     file_info = get_record_file_info(test_callable)
-    file_path = file_info['path'] + file_info['file']
 
-    if not os.path.isdir(file_info['path']):
-        os.makedirs(file_info['path'])
+    if not os.path.isdir(file_info['dir']):
+        os.makedirs(file_info['dir'])
 
-    with open(file_path, 'w+b') as handle:
-        pickle.dump(spy.calls, handle)
+    with open(file_info['path'], 'w+b') as handle:
+        pickle.dump(call_list.calls, handle)
 
 
-def read(test_callable):
-    pass
+def read(test_callable, call_list):
+    file_info = get_record_file_info(test_callable)
+
+    with open(file_info['path'], 'r+b') as handle:
+        call_list.calls = pickle.load(handle)
 
 
 def get_record_file_info(test_callable):
@@ -24,6 +26,7 @@ def get_record_file_info(test_callable):
         path += test_callable.im_class + '/'
 
     return {
-        'path': path,
-        'file': test_callable.__name__ + '.pickle'
+        'dir': path,
+        'file': test_callable.__name__ + '.pickle',
+        'path': path + test_callable.__name__ + '.pickle'
     }

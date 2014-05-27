@@ -22,7 +22,12 @@ def record(target):
 def replay(target):
     @decorator
     def wrapper(fn, *args, **kwargs):
-        return fn(*args, **kwargs)
+        spy = Spy(target)
+
+        storage.read(fn, spy)
+
+        with spy.replay():
+            return fn(*args, **kwargs)
 
     return wrapper
 

@@ -28,6 +28,7 @@ class FunctionRecorder(Recorder):
         return_value = fn(*args, **kwargs)
 
         self.spy.add_call(
+            fn,
             args, 
             kwargs, 
             return_value
@@ -41,6 +42,7 @@ class InstanceMethodRecorder(Recorder):
         return_value = fn(*args, **kwargs)
 
         self.spy.add_call(
+            fn,
             args[1:], # discard 'self'
             kwargs, 
             return_value

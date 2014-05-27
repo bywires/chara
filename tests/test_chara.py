@@ -42,25 +42,31 @@ class CharaTest(TestCase):
 
         self.assertEqual(
             spy.calls, 
-            [ 
-                Call(
-                    args=(1, 2), 
-                    kwargs={'c': 3, 'd': 4}, 
-                    return_value=10
-                ),
+            {
+                'dummy_class_method': [
+                    Call(
+                        args=(1, 2), 
+                        kwargs={'c': 3, 'd': 4}, 
+                        return_value=10
+                    )
+                ],
 
-                Call(
-                    args=(5, 6), 
-                    kwargs={'c': 7, 'd': 8}, 
-                    return_value=26
-                ),
+                'dummy_static_method': [
+                    Call(
+                        args=(5, 6), 
+                        kwargs={'c': 7, 'd': 8}, 
+                        return_value=26
+                    )
+                ],
 
-                Call(
-                    args=(9, 10), 
-                    kwargs={'c': 11, 'd': 12}, 
-                    return_value=42
-                )
-            ]
+                'dummy_instance_method': [
+                    Call(
+                        args=(9, 10), 
+                        kwargs={'c': 11, 'd': 12}, 
+                        return_value=42
+                    )
+                ]
+            }
         )        
 
     def spy_on(self, spy, getter):
@@ -68,7 +74,7 @@ class CharaTest(TestCase):
         self.assertEqual(26, getter()(5, b=6, c=7, d=8), 
                          'Function didn\'t work before spying')
 
-        with spy.record():
+        with spy.record() as call_list:
             target = getter()
             self.assertEqual(spy.name, target.__name__, 
                              'Function name not preserved')
@@ -81,9 +87,13 @@ class CharaTest(TestCase):
 
         self.assertEqual(
             spy.calls, 
-            [ Call(
-                args=(1, 2), 
-                kwargs={'c': 3, 'd': 4}, 
-                return_value=10
-            ) ]
+            { 
+                target.__name__: [ 
+                    Call(
+                        args=(1, 2), 
+                        kwargs={'c': 3, 'd': 4}, 
+                        return_value=10
+                    )
+                ]
+            }
         )

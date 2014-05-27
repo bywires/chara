@@ -26,5 +26,3 @@ class IntegrationTest(TestCase):
             self.assertEqual(5, v.get())
 
         test(self)
-
-        self.fail()
