@@ -3,7 +3,7 @@ from functools import partial
 
 from mock import _get_target
 
-from .exceptions import CharaException
+from .exceptions import CharaException, CallNotFoundException
 from .patchers import get_patcher
 from .recorders import get_recorder
 from .replayers import get_replayer
@@ -48,7 +48,10 @@ class Spy(object):
         ))
 
     def get_call(self, fn, index):
-        return self.calls[fn.__name__][index]
+        try:
+            return self.calls[fn.__name__][index]
+        except IndexError, e:
+            raise CallNotFoundException()
 
     def _start(self, decorator_factory):
         self.patcher = get_patcher(

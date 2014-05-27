@@ -8,3 +8,7 @@ class DecoratorException(CharaException):
 
 class PatcherCreationException(CharaException):
     pass
+
+
+class CallNotFoundException(CharaException):
+    pass
