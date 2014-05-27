@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-
 from mock import _get_target
 
 from .exceptions import CharaException
@@ -39,7 +38,7 @@ class Spy(object):
             kwargs, 
             return_value
         ))
-
+        
     
 class Call(object):
     def __init__(self, args, kwargs, return_value):
@@ -55,3 +54,4 @@ class Call(object):
 
     def __ne__(self, other): 
         return not self.__eq__(other)
+

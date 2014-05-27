@@ -33,7 +33,6 @@ def is_watchable(attribute, context):
         return True
 
     except WrapperCreationException, e:
-        print e
         return False
 
 

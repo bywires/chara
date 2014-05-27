@@ -17,3 +17,11 @@ class Dummy(object):
     @staticmethod
     def dummy_static_method(a, b=0, *args, **kwargs):
         return dummy_function(a, b=b, *args, **kwargs)
+
+
+class Value(object):
+    def __init__(self):
+        self.value = None
+
+    def get(self):
+        return self.value
