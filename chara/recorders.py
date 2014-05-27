@@ -1,30 +1,30 @@
 from decorator import decorate
 
 
-def get_watcher(spy, attribute, context):
+def get_recorder(spy, attribute, context):
     decorator_map = {
-        'function': FunctionWatcher(spy),
-        'instance_method': InstanceMethodWatcher(spy),
-        'class_method': ClassMethodWatcher(spy),
-        'static_method': StaticMethodWatcher(spy)
+        'function': FunctionRecorder(spy),
+        'instance_method': InstanceMethodRecorder(spy),
+        'class_method': ClassMethodRecorder(spy),
+        'static_method': StaticMethodRecorder(spy)
     }
 
     return decorate(attribute, context, decorator_map)
 
 
-class Watcher(object):
+class Recorder(object):
     def __init__(self, spy):
         self.spy = spy
 
-    def watch(self, fn, *args, **kwargs):
+    def record(self, fn, *args, **kwargs):
         raise NotImplementedError
 
     def __call__(self, fn, *args, **kwargs):
-        return self.watch(fn, *args, **kwargs)
+        return self.record(fn, *args, **kwargs)
     
 
-class FunctionWatcher(Watcher):
-    def watch(self, fn, *args, **kwargs):
+class FunctionRecorder(Recorder):
+    def record(self, fn, *args, **kwargs):
         return_value = fn(*args, **kwargs)
 
         self.spy.add_call(
@@ -36,8 +36,8 @@ class FunctionWatcher(Watcher):
         return return_value
 
 
-class InstanceMethodWatcher(Watcher):
-    def watch(self, fn, *args, **kwargs):
+class InstanceMethodRecorder(Recorder):
+    def record(self, fn, *args, **kwargs):
         return_value = fn(*args, **kwargs)
 
         self.spy.add_call(
@@ -49,9 +49,9 @@ class InstanceMethodWatcher(Watcher):
         return return_value
 
 
-class ClassMethodWatcher(InstanceMethodWatcher):
+class ClassMethodRecorder(InstanceMethodRecorder):
     pass
 
 
-class StaticMethodWatcher(FunctionWatcher):
+class StaticMethodRecorder(FunctionRecorder):
     pass

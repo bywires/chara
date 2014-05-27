@@ -5,7 +5,7 @@ from mock import _get_target
 
 from .exceptions import CharaException
 from .patchers import get_patcher
-from .watchers import get_watcher
+from .recorders import get_recorder
 
 
 class Spy(object):
@@ -15,8 +15,8 @@ class Spy(object):
 
     def start(self):
         self.patcher = get_patcher(
-            # watcher factory
-            partial(get_watcher, self),
+            # recorder factory
+            partial(get_recorder, self),
 
             self.name, 
 
