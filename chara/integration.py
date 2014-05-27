@@ -1,7 +1,7 @@
 from decorator import decorator
 
 from .chara import Spy
-from . import records
+from . import storage
 
 
 def record(target):
@@ -12,7 +12,7 @@ def record(target):
         with spy.record():
             result = fn(*args, **kwargs)
 
-        records.dump(fn, spy)
+        storage.write(fn, spy)
         
         return result
 

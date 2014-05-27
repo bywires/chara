@@ -1,7 +1,7 @@
 import os, pickle, inspect
 
 
-def dump(test_callable, spy):
+def write(test_callable, spy):
     file_info = get_record_file_info(test_callable)
     file_path = file_info['path'] + file_info['file']
 
@@ -12,7 +12,7 @@ def dump(test_callable, spy):
         pickle.dump(spy.calls, handle)
 
 
-def load(test_callable):
+def read(test_callable):
     pass
 
 
