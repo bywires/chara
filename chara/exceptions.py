@@ -2,7 +2,7 @@ class CharaException(Exception):
     pass
 
 
-class WrapperCreationException(CharaException):
+class DecoratorException(CharaException):
     pass
 
 

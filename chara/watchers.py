@@ -1,45 +1,33 @@
-from .exceptions import WrapperCreationException
-from .detectors import is_static_method, is_function, is_class_method, \
-    is_instance_method, is_class, is_slot_wrapper
-from .utils import decorator
+from decorator import decorate
 
 
 def get_watcher(spy, attribute, context):
-    if is_static_method(attribute, context):
-        return watch_static_method(spy, attribute)
+    decorator_map = {
+        'function': FunctionWatcher(spy),
+        'instance_method': InstanceMethodWatcher(spy),
+        'class_method': ClassMethodWatcher(spy),
+        'static_method': StaticMethodWatcher(spy)
+    }
 
-    elif is_function(attribute):
-        return watch_function(spy, attribute)
-
-    elif is_class_method(attribute):
-        return watch_class_method(spy, attribute)
-
-    elif is_instance_method(attribute):
-        return watch_instance_method(spy, attribute)
-
-    else:
-        raise WrapperCreationException(
-            'Cannot spy on {attribute} of {context}'.format(
-                attribute=attribute,
-                context=context
-            )
-        )
+    return decorate(attribute, context, decorator_map)
 
 
-def is_watchable(attribute, context):
-    try:
-        get_watcher(None, attribute, context)
-        return True
+class Watcher(object):
+    def __init__(self, spy):
+        self.spy = spy
 
-    except WrapperCreationException, e:
-        return False
+    def watch(self, fn, *args, **kwargs):
+        raise NotImplementedError
 
+    def __call__(self, fn, *args, **kwargs):
+        return self.watch(fn, *args, **kwargs)
+    
 
-def watch_function(spy, attribute):
-    def wrapper(fn, *args, **kwargs):
+class FunctionWatcher(Watcher):
+    def watch(self, fn, *args, **kwargs):
         return_value = fn(*args, **kwargs)
 
-        spy.add_call(
+        self.spy.add_call(
             args, 
             kwargs, 
             return_value
@@ -47,14 +35,12 @@ def watch_function(spy, attribute):
 
         return return_value
 
-    return decorator.function(wrapper, attribute)
 
-
-def watch_instance_method(spy, attribute):
-    def wrapper(fn, *args, **kwargs):
+class InstanceMethodWatcher(Watcher):
+    def watch(self, fn, *args, **kwargs):
         return_value = fn(*args, **kwargs)
 
-        spy.add_call(
+        self.spy.add_call(
             args[1:], # discard 'self'
             kwargs, 
             return_value
@@ -62,34 +48,10 @@ def watch_instance_method(spy, attribute):
 
         return return_value
 
-    return decorator.instance_method(wrapper, attribute)
+
+class ClassMethodWatcher(InstanceMethodWatcher):
+    pass
 
 
-def watch_class_method(spy, attribute):
-    def wrapper(fn, *args, **kwargs):
-        return_value = fn(*args, **kwargs)
-
-        spy.add_call(
-            args[1:], # discard 'cls'
-            kwargs, 
-            return_value
-        )
-
-        return return_value
-
-    return decorator.class_method(wrapper, attribute)
-
-
-def watch_static_method(spy, attribute):
-    def wrapper(fn, *args, **kwargs):
-        return_value = fn(*args, **kwargs)
-
-        spy.add_call(
-            args, 
-            kwargs, 
-            return_value
-        )
-
-        return return_value
-
-    return decorator.static_method(wrapper, attribute)
+class StaticMethodWatcher(FunctionWatcher):
+    pass

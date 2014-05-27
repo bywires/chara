@@ -5,10 +5,10 @@ from .fixtures import Value
 from chara import record, replay
 
 
-MODULE = 'tests.test_decorators'
+MODULE = 'tests.test_integration'
 
 
-class DecoratorsTest(TestCase):
+class IntegrationTest(TestCase):
     def test_record_and_replay(self):
         target =  MODULE + '.Value'
 

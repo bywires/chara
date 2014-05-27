@@ -15,13 +15,13 @@ class Spy(object):
 
     def start(self):
         self.patcher = get_patcher(
+            # watcher factory
+            partial(get_watcher, self),
+
             self.name, 
 
             # import the context
             self.context_getter(), 
-
-            # watcher factory
-            partial(get_watcher, self)
         )
 
         self.patcher.start()

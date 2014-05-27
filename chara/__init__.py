@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 from .chara import Spy, Call
-from .decorators import record, replay
+from .integration import record, replay
 
 
 __version__ = '0.0.1'

@@ -1,9 +1,9 @@
 from .exceptions import PatcherCreationException
-from .watchers import is_watchable
+from .decorator import is_decorable
 from .detectors import is_static_method, is_callable, is_class, get_callables
 
 
-def get_patcher(name, context, decorator_factory):
+def get_patcher(decorator_factory, name, context):
     attribute = getattr(context, name)
 
     if is_class(attribute):
@@ -12,9 +12,9 @@ def get_patcher(name, context, decorator_factory):
 
         # Get all the callables on the object and get patchers for them.
         return MultiPatcher([
-            get_patcher(name, context, decorator_factory) \
+            get_patcher(decorator_factory, name, context) \
             for name, attribute in get_callables(context).items() \
-            if is_watchable(attribute, context)
+            if is_decorable(attribute, context)
         ])
 
     elif is_callable(attribute):
