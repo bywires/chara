@@ -9,8 +9,6 @@ try:
 except ImportError:
     from distutils.core import setup
 
-import chara
-
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -30,7 +28,7 @@ package_data = {
 requires = [
     'nose',
     'mock',
-    'decroator'
+    'decorator'
 ]
 
 classifiers = [
@@ -44,13 +42,13 @@ classifiers = [
 
 setup(
     name='chara',
-    version=chara.__version__,
+    version='0.0.1',
     description='Tools that recording calls to functions during code execution so those behaviors can be replayed in characterization tests.',
     long_description=readme,
     packages=packages,
     package_data=package_data,
     install_requires=requires,
-    author=chara.__author__,
+    author='Bob McKee',
     author_email='bmckee@bywires.com',
     url='https://github.com/bywires/chara',
     license='MIT',
