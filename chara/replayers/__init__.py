@@ -1,7 +1,8 @@
-from decorator import decorate
+from ..decorator import decorate
 
 
-from .replayers import sequence, pattern_match
+from . import sequence, pattern_match
+
 
 SEQUENCE = 'sequence'
 PATTERN_MATCH = 'pattern_match'
@@ -23,8 +24,3 @@ def get_replayer(spy, attribute, context):
     }
 
     return decorate(attribute, context, decorator_map)
-
-
-class Replayer(object):
-    def replay(self, fn, *args, **kwargs):
-        raise NotImplementedError

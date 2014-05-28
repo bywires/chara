@@ -59,5 +59,7 @@ class IntegrationTest(TestCase):
             c = Cache()
             self.assertEqual(10, c.get('ten'))
             self.assertEqual(5, c.get('five'))
+            self.assertEqual(5, c.get('five'))
+            self.assertEqual(10, c.get('ten'))
 
         test_pattern_matching(self)

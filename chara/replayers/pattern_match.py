@@ -1,20 +1,39 @@
-from . import Replayer
+from .interface import Replayer
+from ..exceptions import CallNotFoundException
 
 
-class FunctionReplayer(Replayer):
+class PatternMatchReplayer(Replayer):
     def __init__(self, spy):
         self.spy = spy
+        self.index = None
 
-        # TODO - implement pattern matching
-
+    def get_key(self, args, kwargs):
+        raise NotImplementedError
+    
     def replay(self, fn, *args, **kwargs):
-        return_value = self.spy.get_call(fn, self.index).return_value
-        self.index += 1
-        return return_value
+        if self.index is None:
+            self.index = self.build_index(fn, args, kwargs)
+
+        key = self.get_key(args, kwargs)
+        
+        if key in self.index:
+            return self.index[key]
+        else:
+            raise CallNotFoundException()
+
+    def build_index(self, fn, args, kwargs):
+        return { get_key(call.args, call.kwargs): call.return_value \
+                 for call in self.spy.calls.get(fn.__name__, []) }
 
 
-class InstanceMethodReplayer(FunctionReplayer):
-    pass
+class FunctionReplayer(PatternMatchReplayer):
+    def get_key(self, args, kwargs):
+        return get_key(args, kwargs)
+
+
+class InstanceMethodReplayer(PatternMatchReplayer):
+    def get_key(self, args, kwargs):
+        return get_key(args[1:], kwargs)
 
 
 class ClassMethodReplayer(InstanceMethodReplayer):
@@ -23,3 +42,10 @@ class ClassMethodReplayer(InstanceMethodReplayer):
 
 class StaticMethodReplayer(FunctionReplayer):
     pass
+
+
+def get_key(args, kwargs):
+    return (
+        args, 
+        tuple(sorted(kwargs.items()))
+    )

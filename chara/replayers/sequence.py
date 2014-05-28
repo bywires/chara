@@ -1,4 +1,4 @@
-from . import Replayer
+from .interface import Replayer
 
 
 class FunctionReplayer(Replayer):

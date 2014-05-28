@@ -54,9 +54,6 @@ class Spy(object):
         except IndexError, e:
             raise CallNotFoundException()
 
-    def replay_mode(self, replay_mode):
-        self.replay_mode = replay_mode
-
     def _start(self, decorator_factory):
         self.patcher = get_patcher(
             # replayer factory

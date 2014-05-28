@@ -2,7 +2,7 @@ from decorator import decorator
 
 from .chara import Spy
 from . import storage
-from .storage import SEQUENCE, PATTERN_MATCH
+from .replayers import SEQUENCE, PATTERN_MATCH
 
 
 def record(target):
@@ -20,18 +20,18 @@ def record(target):
     return wrapper
 
 
-def replay(target):
+def replay(target, sequence_mode=False, pattern_match_mode=False):
     @decorator
-    def wrapper(fn, sequence_mode=True, pattern_match_mode=False, *args, **kwargs):
+    def wrapper(fn, *args, **kwargs):
         spy = Spy(target)
 
         storage.read(fn, spy)
 
         if sequence_mode:
-            spy.replay_mode(SEQUENCE)
+            spy.replay_mode = SEQUENCE
 
         elif pattern_match_mode:
-            spy.replay_mode(PATTERN_MATCH)
+            spy.replay_mode = PATTERN_MATCH
 
         with spy.replay():
             return fn(*args, **kwargs)
