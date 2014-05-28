@@ -1,7 +1,7 @@
 Chara
 ======================
 
-Tools that recording calls to functions during code execution so those behaviors can be replayed in characterization tests.
+Chara enables developers to quickly create characterization tests.  Start by creating integration tests using whatever testing framework you prefer.  Using Chara you decorate those test functions to record interactions with specific dependencies.  Afterwards, you can replay the recording and those dependencies will behave as recorded.
 
 Usage
 -----
