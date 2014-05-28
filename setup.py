@@ -1,13 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import os
 import sys
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 if sys.argv[-1] == 'publish':
@@ -17,13 +13,6 @@ if sys.argv[-1] == 'publish':
 
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
     readme = f.read()
-
-packages = [
-    'chara',
-]
-
-package_data = {
-}
 
 requires = [
     'nose',
@@ -45,8 +34,7 @@ setup(
     version='0.0.1',
     description='Chara enables developers to quickly create characterization tests.  Start by creating integration tests using whatever testing framework you prefer.  Using Chara you decorate those test functions to record interactions with specific dependencies.  Afterwards, you can replay the recording and those dependencies will behave as recorded.',
     long_description=readme,
-    packages=packages,
-    package_data=package_data,
+    packages=find_packages(),
     install_requires=requires,
     author='Bob McKee',
     author_email='bmckee@bywires.com',
