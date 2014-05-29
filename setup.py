@@ -11,13 +11,16 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
     readme = f.read()
 
-requires = [
-    'nose',
+install_requires = [
     'mock',
     'decorator'
+]
+
+tests_require = [
+    'nose'
 ]
 
 classifiers = [
@@ -31,11 +34,13 @@ classifiers = [
 
 setup(
     name='chara',
-    version='0.0.1',
+    version='0.1.0',
     description='Chara enables developers to quickly create characterization tests.  Start by creating integration tests using whatever testing framework you prefer.  Using Chara you decorate those test functions to record interactions with specific dependencies.  Afterwards, you can replay the recording and those dependencies will behave as recorded.',
     long_description=readme,
     packages=find_packages(),
-    install_requires=requires,
+    install_requires=install_requires,
+    tests_require=tests_require,
+    test_suite = 'nose.collector',
     author='Bob McKee',
     author_email='bmckee@bywires.com',
     url='https://github.com/bywires/chara',
