@@ -32,6 +32,13 @@ classifiers = [
         'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
+keywords = [
+    'record',
+    'replay',
+    'spy',
+    'test',
+]
+
 setup(
     name='chara',
     version='0.1.0',
@@ -46,4 +53,5 @@ setup(
     url='https://github.com/bywires/chara',
     license='MIT',
     classifiers=classifiers,
+    keywords=keywords
 )
