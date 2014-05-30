@@ -13,7 +13,7 @@ def record(target):
         with spy.record():
             result = fn(*args, **kwargs)
 
-        storage.write(fn, spy)
+        storage.write(fn, spy, args[0] if args else None)
 
         return result
 
@@ -25,7 +25,7 @@ def replay(target, sequence_mode=False, pattern_match_mode=False):
     def wrapper(fn, *args, **kwargs):
         spy = Spy(target)
 
-        storage.read(fn, spy)
+        storage.read(fn, spy, args[0] if args else None)
 
         if sequence_mode:
             spy.replay_mode = SEQUENCE

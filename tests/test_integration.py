@@ -15,7 +15,7 @@ class IntegrationTest(TestCase):
         def test_sequence(self):
             pass
 
-        storage.delete(test_sequence)
+        storage.delete(test_sequence, self)
 
     def test_record_and_replay_sequence(self):
         target =  MODULE + '.Value'
