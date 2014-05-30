@@ -39,9 +39,11 @@ keywords = [
     'test',
 ]
 
+version = '0.1.1'
+
 setup(
     name='chara',
-    version='0.1.0',
+    version=version,
     description='Chara enables developers to quickly create characterization tests.  Start by creating integration tests using whatever testing framework you prefer.  Using Chara you decorate those test functions to record interactions with specific dependencies.  Afterwards, you can replay the recording and those dependencies will behave as recorded.',
     long_description=readme,
     packages=find_packages(),
@@ -51,6 +53,7 @@ setup(
     author='Bob McKee',
     author_email='bmckee@bywires.com',
     url='https://github.com/bywires/chara',
+    download_url='https://github.com/bywires/chara/tarball/' + version,
     license='MIT',
     classifiers=classifiers,
     keywords=keywords
