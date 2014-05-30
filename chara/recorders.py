@@ -21,7 +21,7 @@ class Recorder(object):
 
     def __call__(self, fn, *args, **kwargs):
         return self.record(fn, *args, **kwargs)
-    
+
 
 class FunctionRecorder(Recorder):
     def record(self, fn, *args, **kwargs):
@@ -29,8 +29,8 @@ class FunctionRecorder(Recorder):
 
         self.spy.add_call(
             fn,
-            args, 
-            kwargs, 
+            args,
+            kwargs,
             return_value
         )
 
@@ -44,7 +44,7 @@ class InstanceMethodRecorder(Recorder):
         self.spy.add_call(
             fn,
             args[1:], # discard 'self'
-            kwargs, 
+            kwargs,
             return_value
         )
 

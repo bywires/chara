@@ -9,12 +9,12 @@ def record(target):
     @decorator
     def wrapper(fn, *args, **kwargs):
         spy = Spy(target)
-    
+
         with spy.record():
             result = fn(*args, **kwargs)
 
         storage.write(fn, spy)
-        
+
         return result
 
     return wrapper

@@ -32,7 +32,6 @@ class Spy(object):
     def record(self):
         self.start_recording()
         yield
-        self.last_recording = self.patcher
         self.stop_recording()
 
     @contextmanager
@@ -44,14 +43,14 @@ class Spy(object):
     def add_call(self, fn, args, kwargs, return_value):
         self.calls.setdefault(fn.__name__, []).append(Call(
             args,
-            kwargs, 
+            kwargs,
             return_value
         ))
 
     def get_call(self, fn, index):
         try:
             return self.calls[fn.__name__][index]
-        except IndexError, e:
+        except IndexError:
             raise CallNotFoundException()
 
     def _start(self, decorator_factory):
@@ -59,18 +58,18 @@ class Spy(object):
             # replayer factory
             partial(decorator_factory, self),
 
-            self.name, 
+            self.name,
 
             # import the context
-            self.context_getter(), 
+            self.context_getter(),
         )
 
         self.patcher.start()
 
     def _stop(self):
         if not self.patcher:
-           raise CharaException('Spy cannot be stopped because it was '
-                                'not started')
+            raise CharaException('Spy cannot be stopped because it was '
+                                 'not started')
 
         self.patcher.stop()
 
@@ -86,8 +85,8 @@ class Call(object):
     def __str__(self):
         return super(Call, self).__str__() + ' ' + str(self.__dict__)
 
-    def __eq__(self, other): 
+    def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other): 
+    def __ne__(self, other):
         return not self.__eq__(other)

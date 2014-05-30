@@ -46,7 +46,7 @@ def instance_method(outer, inner):
 
 def class_method(outer, inner):
     return classmethod(decorator(
-        outer, 
+        outer,
         inner.__get__(inner.__self__).im_func
     ))
 

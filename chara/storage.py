@@ -27,7 +27,8 @@ def delete(test_callable):
 def get_record_file_info(test_callable):
     test_file = inspect.getfile(test_callable)
     path = os.path.dirname(test_file) + '/.chara/'
-    file_name = os.path.basename(test_file) + '.' + test_callable.__name__ + '.pickle'
+    file_name = os.path.basename(test_file) + '.' \
+                + test_callable.__name__ + '.pickle'
 
     if hasattr(test_callable, 'im_class'):
         path += test_callable.im_class + '/'
@@ -39,4 +40,4 @@ def get_record_file_info(test_callable):
     }
 
 
-    
+

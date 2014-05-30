@@ -9,8 +9,6 @@ PATTERN_MATCH = 'pattern_match'
 
 
 def get_replayer(spy, attribute, context):
-    mode = spy.replay_mode or SEQUENCE
-
     if spy.replay_mode == PATTERN_MATCH:
         module = pattern_match
     else:

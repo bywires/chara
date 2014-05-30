@@ -56,19 +56,21 @@ class CallablePatcher(Patcher):
 
     def stop(self):
         setattr(self.context, self.name, self.attribute)
-    
+
 
 class StaticMethodPatcher(CallablePatcher):
     def stop(self):
         setattr(self.context, self.name, staticmethod(self.attribute))
 
-        
+
 class MultiPatcher(Patcher):
     def __init__(self, patchers):
         self.patchers = patchers
 
     def start(self):
-        for p in self.patchers: p.start()
+        for patcher in self.patchers:
+            patcher.start()
 
     def stop(self):
-        for p in self.patchers: p.stop()
+        for patcher in self.patchers:
+            patcher.stop()

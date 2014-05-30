@@ -9,21 +9,21 @@ class PatternMatchReplayer(Replayer):
 
     def get_key(self, args, kwargs):
         raise NotImplementedError
-    
+
     def replay(self, fn, *args, **kwargs):
         if self.index is None:
-            self.index = self.build_index(fn, args, kwargs)
+            self.index = self.build_index(fn)
 
         key = self.get_key(args, kwargs)
-        
+
         if key in self.index:
             return self.index[key]
         else:
             raise CallNotFoundException()
 
-    def build_index(self, fn, args, kwargs):
-        return { get_key(call.args, call.kwargs): call.return_value \
-                 for call in self.spy.calls.get(fn.__name__, []) }
+    def build_index(self, fn):
+        return {get_key(call.args, call.kwargs): call.return_value \
+                for call in self.spy.calls.get(fn.__name__, [])}
 
 
 class FunctionReplayer(PatternMatchReplayer):
@@ -46,6 +46,6 @@ class StaticMethodReplayer(FunctionReplayer):
 
 def get_key(args, kwargs):
     return (
-        args, 
+        args,
         tuple(sorted(kwargs.items()))
     )
